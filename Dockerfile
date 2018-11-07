@@ -50,7 +50,6 @@ RUN apt-get ${APT_FLAGS_COMMON} update && \
     mkdir -p /usr/share/doc/zabbix-${ZBX_TYPE}-${ZBX_DB_TYPE} && \
     apt-get ${APT_FLAGS_COMMON} update && \
     apt-get ${APT_FLAGS_PERSISTENT} install \
-            supervisor \
             iputils-ping \
             traceroute \
             fping \
@@ -67,7 +66,9 @@ RUN apt-get ${APT_FLAGS_COMMON} update && \
             mysql-client \
             snmp-mibs-downloader \
             libwww-perl \
-            libjson-xs-perl\
+            libjson-xs-perl \
+            libtest-simple-perl \
+            libtest-most-perl \
             unixodbc && \
     apt-get ${APT_FLAGS_COMMON} autoremove && \
     apt-get ${APT_FLAGS_COMMON} clean && \
@@ -104,13 +105,12 @@ RUN apt-get ${APT_FLAGS_COMMON} update && \
             make \
             pkg-config \
             subversion \
-            unixodbc-dev
-WORKDIR /etc/appdir/
-RUN cd /etc/appdir/ && \
+            unixodbc-dev && \
+    cd /etc/appdir/ && \
     perl Makefile.PL INSTALLSITESCRIPT=/usr/lib/zabbix/alertscripts && \
     make install && \
-    rm -rf /etc/appdir/
-RUN cd /tmp/ && \
+    rm -rf /etc/appdir/ && \
+    cd /tmp/ && \
     svn --quiet export ${ZBX_SOURCES} zabbix-${ZBX_VERSION} && \
     cd /tmp/zabbix-${ZBX_VERSION} && \
     zabbix_revision=`svn info ${ZBX_SOURCES} | grep "Last Changed Rev"|awk '{print $4;}'` && \
@@ -179,9 +179,7 @@ WORKDIR /var/lib/zabbix
 
 VOLUME ["/usr/lib/zabbix/alertscripts", "/usr/lib/zabbix/externalscripts", "/var/lib/zabbix/enc", "/var/lib/zabbix/mibs", "/var/lib/zabbix/modules"]
 VOLUME ["/var/lib/zabbix/snmptraps", "/var/lib/zabbix/ssh_keys", "/var/lib/zabbix/ssl/certs", "/var/lib/zabbix/ssl/keys", "/var/lib/zabbix/ssl/ssl_ca"]
-
-ADD conf/etc/supervisor/ /etc/supervisor/
-
+      
 COPY ["docker-entrypoint.sh", "/usr/bin/"]
 
 ENTRYPOINT ["docker-entrypoint.sh"]
