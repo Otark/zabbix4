@@ -69,12 +69,14 @@ RUN apt-get ${APT_FLAGS_COMMON} update && \
             libjson-xs-perl \
             libtest-simple-perl \
             libtest-most-perl \
+            sendemail \
             unixodbc && \
     apt-get ${APT_FLAGS_COMMON} autoremove && \
     apt-get ${APT_FLAGS_COMMON} clean && \
     rm -rf /var/lib/apt/lists/*
 
 ADD zabbix-notify /etc/appdir/
+ADD zabbix_email.sh /usr/lib/zabbix/alertscripts
 
 ARG MAJOR_VERSION=4.0
 ARG ZBX_VERSION=${MAJOR_VERSION}.1
@@ -105,6 +107,7 @@ RUN apt-get ${APT_FLAGS_COMMON} update && \
             make \
             pkg-config \
             subversion \
+            sendemail \
             unixodbc-dev && \
     cd /etc/appdir/ && \
     perl Makefile.PL INSTALLSITESCRIPT=/usr/lib/zabbix/alertscripts && \
@@ -179,9 +182,10 @@ WORKDIR /var/lib/zabbix
 
 VOLUME ["/usr/lib/zabbix/alertscripts", "/usr/lib/zabbix/externalscripts", "/var/lib/zabbix/enc", "/var/lib/zabbix/mibs", "/var/lib/zabbix/modules"]
 VOLUME ["/var/lib/zabbix/snmptraps", "/var/lib/zabbix/ssh_keys", "/var/lib/zabbix/ssl/certs", "/var/lib/zabbix/ssl/keys", "/var/lib/zabbix/ssl/ssl_ca"]
-      
+
 COPY ["docker-entrypoint.sh", "/usr/bin/"]
 
-RUN chmod 777 /usr/bin/docker-entrypoint.sh 
+RUN chmod 755 /usr/lib/zabbix/alertscripts/zabbix_email.sh
+RUN chmod 777 /usr/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
