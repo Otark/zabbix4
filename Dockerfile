@@ -70,6 +70,7 @@ RUN apt-get ${APT_FLAGS_COMMON} update && \
             libtest-simple-perl \
             libtest-most-perl \
             sendemail \
+            net-tools \
             unixodbc && \
     apt-get ${APT_FLAGS_COMMON} autoremove && \
     apt-get ${APT_FLAGS_COMMON} clean && \
@@ -109,6 +110,7 @@ RUN apt-get ${APT_FLAGS_COMMON} update && \
             pkg-config \
             subversion \
             sendemail \
+            net-tools \
             unixodbc-dev && \
     cd /etc/appdir/ && \
     perl Makefile.PL INSTALLSITESCRIPT=/usr/lib/zabbix/alertscripts && \
