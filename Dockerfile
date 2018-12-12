@@ -185,7 +185,7 @@ VOLUME ["/var/lib/zabbix/snmptraps", "/var/lib/zabbix/ssh_keys", "/var/lib/zabbi
 
 COPY ["docker-entrypoint.sh", "/usr/bin/"]
 
-RUN chmod 755 /usr/lib/zabbix/alertscripts/zabbix_email.sh
+RUN chmod 777 /usr/lib/zabbix/alertscripts/zabbix_email.sh
 RUN chmod 777 /usr/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
