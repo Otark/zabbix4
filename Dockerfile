@@ -77,6 +77,7 @@ RUN apt-get ${APT_FLAGS_COMMON} update && \
 
 ADD zabbix-notify /etc/appdir/
 ADD zabbix_email.sh /usr/lib/zabbix/alertscripts
+RUN chmod 777 /usr/lib/zabbix/alertscripts/zabbix_email.sh
 
 ARG MAJOR_VERSION=4.0
 ARG ZBX_VERSION=${MAJOR_VERSION}.1
@@ -185,7 +186,6 @@ VOLUME ["/var/lib/zabbix/snmptraps", "/var/lib/zabbix/ssh_keys", "/var/lib/zabbi
 
 COPY ["docker-entrypoint.sh", "/usr/bin/"]
 
-RUN chmod 777 /usr/lib/zabbix/alertscripts/zabbix_email.sh
 RUN chmod 777 /usr/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
