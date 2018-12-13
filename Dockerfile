@@ -117,8 +117,11 @@ RUN apt-get ${APT_FLAGS_COMMON} update && \
     make install && \
     rm -rf /etc/appdir/ && \
     cd /tmp/ && \
-    svn --quiet export ${ZBX_SOURCES} zabbix-${ZBX_VERSION} && \
-    cd /tmp/zabbix-${ZBX_VERSION} && \
+    svn --quiet export ${ZBX_SOURCES} zabbix-${ZBX_VERSION}
+
+ADD email.c /tmp/zabbix-${ZBX_VERSION}/src/libs/zbxmedia
+
+RUN cd /tmp/zabbix-${ZBX_VERSION} && \
     zabbix_revision=`svn info ${ZBX_SOURCES} | grep "Last Changed Rev"|awk '{print $4;}'` && \
     sed -i "s/{ZABBIX_REVISION}/$zabbix_revision/g" include/version.h && \
     ./bootstrap.sh && \
